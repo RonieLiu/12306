@@ -1,6 +1,6 @@
 # coding=utf-8
+from ronie.logger import log
 import json
-
 from config.TicketEnmu import ticket
 from myException.PassengerUserException import PassengerUserException
 import wrapcache
@@ -38,9 +38,9 @@ class getPassengerDTOs:
             return _normal_passenger if _normal_passenger else [normal_passengers[0]]  # 如果配置乘车人没有在账号，则默认返回第一个用户
         else:
             if getPassengerDTOsResult.get("data", False) and getPassengerDTOsResult['data'].get("exMsg", False):
-                print(getPassengerDTOsResult['data'].get("exMsg", False))
+                log(getPassengerDTOsResult['data'].get("exMsg", False))
             elif getPassengerDTOsResult.get('messages', False):
-                print(getPassengerDTOsResult.get('messages', False))
+                log(getPassengerDTOsResult.get('messages', False))
             else:
                 print(u"警告：您的账号可能买票有问题，获取不到联系人，请测试是否能正常下单，在捡漏或者购票！！！")
                 print(u"警告：您的账号可能买票有问题，获取不到联系人，请测试是否能正常下单，在捡漏或者购票！！！")
@@ -78,7 +78,7 @@ class getPassengerDTOs:
         oldPassengerStr = []
         if wrapcache.get("user_info"):  # 如果缓存中有联系人方式，则读取缓存中的联系人
             user_info = wrapcache.get("user_info")
-            print(u"缓存中找到联系人信息: {0}".format(user_info))
+            log(u"缓存中找到联系人信息: {0}".format(user_info))
         else:
             user_info = self.sendGetPassengerDTOs()
             wrapcache.set("user_info", user_info, timeout=9999999)

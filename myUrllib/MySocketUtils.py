@@ -1,4 +1,5 @@
 # coding=utf-8
+from ronie.logger import log
 import json
 import socket
 import re
@@ -116,7 +117,7 @@ class socketUtils:
     #                                                 Referer,
     #                                                 Cookie
     #                                                 )
-    #         print("send_value: " + send_value)
+    #         log("send_value: " + send_value)
     #         self.s.sendall(send_value)
     #     else:
     #         self.s.sendall(default_get_data().format(url,
@@ -129,7 +130,7 @@ class socketUtils:
     #         if not data:
     #             break
     #     self.close_s()
-    #     print(total_data)
+    #     log(total_data)
     #     return self.recv_data(total_data)
 
     def recv_data(self, r_data):
@@ -180,7 +181,7 @@ class socketUtils:
             data = json.loads(recv_data.split("\n")[-1])
             return data
         else:
-            print(recv_data)
+            log(recv_data)
 
 
 if __name__ == "__main__":
@@ -190,13 +191,13 @@ if __name__ == "__main__":
     to_station = "CSQ"
     urls["select_url"]["req_url"] = "https://kyfw.12306.cn" + urls["select_url"]["req_url"].format(train_date, from_station, to_station)
     result = so.send(urls=urls["select_url"])
-    print(result)
+    log(result)
 
     so = socketUtils('183.232.189.31', 80)
 
     data = "secretStr=Vgo534nDZiCH8NCvyEPcGepzJoRCjvYr34gKFv5CW1K1XtM6mtKHoiFPjUYvaVKoe06SMhUUpT%2FK%0AxIEIsBD4zHgJPpVyKiTPx80y6OCWhNgcKjib2LLMXMJfgTgh0RKPISjkDjVFmO9p905O%2FegDeKjp%0A1fhIeqCuYraHjNhI0PjQY39BAY4AHLzW0iGgDq8b%2FtpyOY8Td2XfIWNZJCWzgyPkNXOk0HUguB2G%0AKh2T8nlko6zb5ra%2B%2BA%3D%3D&train_date=2018-08-03&back_train_date=2018-08-03&tour_flag=dc&purpose_codes=ADULT&query_from_station_name=深圳&query_to_station_name=长沙&undefined"
     result1 = so.send(urls=urls["submit_station_url"], data=data)
-    print(result1)
+    log(result1)
     # so = socketUtils('183.232.189.31', 80)
     # result = so.send(url="https://kyfw.12306.cn/passport/web/login", s_data="")
-    # print(result)
+    # log(result)

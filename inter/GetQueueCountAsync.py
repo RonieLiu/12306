@@ -1,4 +1,5 @@
 # coding=utf-8
+from ronie.logger import log
 import datetime
 import sys
 import time
@@ -96,25 +97,25 @@ class getQueueCountAsync:
                     ticket_data = getQueueCountAsyncResult["data"]["ticket"]
                     ticket_split = sum(map(self.conversion_int, ticket_data.split(","))) if ticket_data.find(
                         ",") != -1 else ticket_data
-                    print(u"排队成功, 当前余票还剩余: {0} 张".format(ticket_split))
+                    log(u"排队成功, 当前余票还剩余: {0} 张".format(ticket_split))
                     c = confirmSingleForQueueAsys(session=self.session,
                                                   passengerTicketStr=self.passengerTicketStr,
                                                   oldPassengerStr=self.oldPassengerStr,
                                                   result=self.result,)
-                    print(u"验证码提交安全期，等待{}MS".format(self.ifShowPassCodeTime))
+                    log(u"验证码提交安全期，等待{}MS".format(self.ifShowPassCodeTime))
                     time.sleep(self.ifShowPassCodeTime)
                     c.sendConfirmSingleForQueueAsys()
                 else:
-                    print(u"排队发现未知错误{0}，将此列车 {1}加入小黑屋".format(getQueueCountAsyncResult, self.train_no))
+                    log(u"排队发现未知错误{0}，将此列车 {1}加入小黑屋".format(getQueueCountAsyncResult, self.train_no))
                     wrapcache.set(key=self.train_no, value=datetime.datetime.now(),
                                   timeout=int(_get_yaml()["ticket_black_list_time"]) * 60)
             elif "messages" in getQueueCountAsyncResult and getQueueCountAsyncResult["messages"]:
-                print(u"排队异常，错误信息：{0}, 将此列车 {1}加入小黑屋".format(getQueueCountAsyncResult["messages"][0], self.train_no))
+                log(u"排队异常，错误信息：{0}, 将此列车 {1}加入小黑屋".format(getQueueCountAsyncResult["messages"][0], self.train_no))
                 wrapcache.set(key=self.train_no, value=datetime.datetime.now(),
                               timeout=int(_get_yaml()["ticket_black_list_time"]) * 60)
             else:
                 if "validateMessages" in getQueueCountAsyncResult and getQueueCountAsyncResult["validateMessages"]:
-                    print(str(getQueueCountAsyncResult["validateMessages"]))
+                    log(str(getQueueCountAsyncResult["validateMessages"]))
 
 
 

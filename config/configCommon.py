@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import ronie.logger
 import datetime
 import os
 import random
@@ -103,7 +104,7 @@ def getCacheFile(cacheType):
 def checkSleepTime(session):
     now = datetime.datetime.now()
     if now.hour >= 23 or now.hour < 6:
-        print(u"12306休息时间，本程序自动停止,明天早上六点点将自动运行")
+        ronie.logger.log(u"12306休息时间，本程序自动停止,明天早上七点将自动运行")
         open_time = datetime.datetime(now.year, now.month, now.day, 6)
         if open_time < now:
             open_time += datetime.timedelta(1)

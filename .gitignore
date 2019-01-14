@@ -3,3 +3,5 @@
 *.yaml
 *.log
 .idea/
+tkcode.png
+*.pid

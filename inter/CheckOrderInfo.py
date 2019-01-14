@@ -1,4 +1,5 @@
 # coding=utf-8
+from ronie.logger import log
 from collections import OrderedDict
 from inter.GetQueueCount import getQueueCount
 from inter.GetRepeatSubmitToken import getRepeatSubmitToken
@@ -47,7 +48,7 @@ class checkOrderInfo:
         checkOrderInfoRep = self.session.httpClint.send(CheckOrderInfoUrls, data)
         data = checkOrderInfoRep.get("data", {})
         if data and data.get("submitStatus", False):
-            print (u'车票提交通过，正在尝试排队')
+            log (u'车票提交通过，正在尝试排队')
             ifShowPassCodeTime = int(checkOrderInfoRep["data"]["ifShowPassCodeTime"]) / float(1000)
             if "ifShowPassCode" in checkOrderInfoRep["data"] and checkOrderInfoRep["data"]["ifShowPassCode"] == "Y":
                 is_need_code = True
@@ -69,6 +70,6 @@ class checkOrderInfo:
                                        )
             QueueCount.sendGetQueueCount()
         elif "errMsg" in data and data["errMsg"]:
-            print(checkOrderInfoRep['data']["errMsg"])
+            log(checkOrderInfoRep['data']["errMsg"])
         elif 'messages' in checkOrderInfoRep and checkOrderInfoRep['messages']:
-            print (checkOrderInfoRep['messages'][0])
+            log (checkOrderInfoRep['messages'][0])

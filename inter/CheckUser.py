@@ -1,4 +1,5 @@
 # coding=utf-8
+from ronie.logger import log
 import datetime
 import time
 import wrapcache
@@ -29,10 +30,10 @@ class checkUser:
                         wrapcache.set("user_time", datetime.datetime.now(), timeout=60 * CHENK_TIME)
                     else:
                         if check_user['messages']:
-                            print (ticket.LOGIN_SESSION_FAIL.format(check_user['messages']))
+                            log (ticket.LOGIN_SESSION_FAIL.format(check_user['messages']))
                             self.session.call_login()
                             wrapcache.set("user_time", datetime.datetime.now(), timeout=60 * CHENK_TIME)
                         else:
-                            print (ticket.LOGIN_SESSION_FAIL.format(check_user['messages']))
+                            log (ticket.LOGIN_SESSION_FAIL.format(check_user['messages']))
                             self.session.call_login()
                             wrapcache.set("user_time", datetime.datetime.now(), timeout=60 * CHENK_TIME)

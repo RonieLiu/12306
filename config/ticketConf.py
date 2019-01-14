@@ -1,4 +1,5 @@
 # -*- coding: utf8 -*-
+from ronie.logger import log
 __author__ = 'MR.wen'
 import os
 import yaml
@@ -17,4 +18,4 @@ def _get_yaml():
 
 
 if __name__ == '__main__':
-    print(_get_yaml())
+    log(_get_yaml())

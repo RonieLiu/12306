@@ -1,4 +1,5 @@
 # -*- coding=utf-8 -*-
+from ronie.logger import log
 from time import sleep
 
 from config.ticketConf import _get_yaml
@@ -36,11 +37,11 @@ class GoLogin:
         }
         fresult = self.session.httpClint.send(codeCheck, codeCheckData)
         if "result_code" in fresult and fresult["result_code"] == "4":
-            print (u"验证码通过,开始登录..")
+            log (u"验证码通过,开始登录..")
             return True
         else:
             if "result_message" in fresult:
-                print(fresult["result_message"])
+                log(fresult["result_message"])
             sleep(1)
             self.session.httpClint.del_cookies()
 
@@ -59,7 +60,7 @@ class GoLogin:
         }
         tresult = self.session.httpClint.send(logurl, logData)
         if 'result_code' in tresult and tresult["result_code"] == 0:
-            print (u"登录成功")
+            log (u"登录成功")
             tk = self.auth()
             if "newapptk" in tk and tk["newapptk"]:
                 return tk["newapptk"]
@@ -70,8 +71,8 @@ class GoLogin:
             if messages.find(u"密码输入错误") is not -1:
                 raise UserPasswordException("{0}".format(messages))
             else:
-                print (u"登录失败: {0}".format(messages))
-                print (u"尝试重新登陆")
+                log (u"登录失败: {0}".format(messages))
+                log (u"尝试重新登陆")
                 return False
         else:
             return False
@@ -89,7 +90,7 @@ class GoLogin:
             uamauthclientResult = self.session.httpClint.send(uamauthclientUrl, data)
             if uamauthclientResult:
                 if "result_code" in uamauthclientResult and uamauthclientResult["result_code"] == 0:
-                    print(u"欢迎 {} 登录".format(uamauthclientResult["username"]))
+                    log(u"欢迎 {} 登录".format(uamauthclientResult["username"]))
                     return True
                 else:
                     return False

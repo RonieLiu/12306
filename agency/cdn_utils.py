@@ -1,4 +1,5 @@
 # encoding=utf8
+from ronie.logger import log
 import collections
 import json
 import os
@@ -46,7 +47,7 @@ class CDNProxy:
                     city_re = re.compile(r"<li id=\"(\S+)\" class=\"PingListCent PingRLlist")
                     self.city_list = re.findall(city_re, rep.content)
                     if self.city_list:
-                        print(self.city_list)
+                        log(self.city_list)
                         break
             else:
                 pass
@@ -59,16 +60,16 @@ class CDNProxy:
         # path = os.path.join(os.path.dirname(__file__), '../cdn_list')
         # with open(path, "r") as f:
         #     for i in f.readlines():
-        #         # print(i.replace("\n", ""))
+        #         # log(i.replace("\n", ""))
         #         cdn_list = re.findall(cdn_re, i)
         #         if cdn_list and "kyfw.12306.cn:443" not in cdn_list:
-        #             print(cdn_list[0].split(":")[0])
+        #             log(cdn_list[0].split(":")[0])
         #             cdn.append(cdn_list[0].split(":")[0])
         #     return cdn
         path = os.path.join(os.path.dirname(__file__), '../cdn_list')
         with open(path, "r") as f:
             for i in f.readlines():
-                # print(i.replace("\n", ""))
+                # log(i.replace("\n", ""))
                 if i and "kyfw.12306.cn:443" not in i:
                     cdn.append(i.replace("\n", ""))
             return cdn
@@ -76,4 +77,4 @@ class CDNProxy:
 
 if __name__ == '__main__':
     cdn = CDNProxy()
-    print(cdn.open_cdn_file())
+    cdn.open_cdn_file()

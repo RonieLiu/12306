@@ -1,4 +1,5 @@
 # coding=utf-8
+from ronie.logger import log
 import datetime
 import time
 
@@ -61,36 +62,36 @@ class confirmSingleForQueue:
         checkQueueOrderUrl = self.session.urls["checkQueueOrderUrl"]
         try:
             if self.is_node_code:
-                print(u"正在使用自动识别验证码功能")
+                log(u"正在使用自动识别验证码功能")
                 for i in range(3):
                     randCode = getRandCode(is_auto_code=True, auto_code_type=_get_yaml()["auto_code_type"])
                     checkcode = checkRandCodeAnsyn(self.session, randCode, self.token)
                     if checkcode == 'TRUE':
-                        print(u"验证码通过,正在提交订单")
+                        log(u"验证码通过,正在提交订单")
                         data['randCode'] = randCode
                         break
                     else:
-                        print (u"验证码有误, {0}次尝试重试".format(i + 1))
-                print(u"验证码超过限定次数3次，放弃此次订票机会!")
+                        log (u"验证码有误, {0}次尝试重试".format(i + 1))
+                log(u"验证码超过限定次数3次，放弃此次订票机会!")
             else:
-                print(u"不需要验证码")
+                log(u"不需要验证码")
             time.sleep(self.ifShowPassCodeTime)
             checkQueueOrderResult = self.session.httpClint.send(checkQueueOrderUrl, data)
             if "status" in checkQueueOrderResult and checkQueueOrderResult["status"]:
                 c_data = checkQueueOrderResult["data"] if "data" in checkQueueOrderResult else {}
                 if 'submitStatus' in c_data and c_data['submitStatus'] is True:
-                    # print(u"提交订单成功！")
+                    log(u"提交订单成功！")
                     qow = queryOrderWaitTime(self.session)
                     qow.sendQueryOrderWaitTime()
                 else:
                     if 'errMsg' in c_data and c_data['errMsg']:
-                        print(u"提交订单失败，{0}".format(c_data['errMsg']))
+                        log(u"提交订单失败，{0}".format(c_data['errMsg']))
                     else:
-                        print(c_data)
-                        print(u'订票失败!很抱歉,请重试提交预订功能!')
+                        log(c_data)
+                        log(u'订票失败!很抱歉,请重试提交预订功能!')
             elif "messages" in checkQueueOrderResult and checkQueueOrderResult["messages"]:
-                print(u"提交订单失败,错误信息: " + checkQueueOrderResult["messages"])
+                log(u"提交订单失败,错误信息: " + checkQueueOrderResult["messages"])
             else:
-                print(u"提交订单中，请耐心等待：" + checkQueueOrderResult["message"])
+                log(u"提交订单中，请耐心等待：" + checkQueueOrderResult["message"])
         except ValueError:
-            print(u"接口 {} 无响应".format(checkQueueOrderUrl))
+            log(u"接口 {} 无响应".format(checkQueueOrderUrl))

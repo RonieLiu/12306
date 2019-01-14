@@ -1,4 +1,5 @@
 # coding:utf-8
+from ronie.logger import log
 import requests
 from hashlib import md5
 
@@ -37,7 +38,7 @@ class RClient(object):
         params.update(self.base_params)
         files = {'image': ('a.jpg', im)}
         r = requests.post('http://api.ruokuai.com/create.json', data=params, files=files, headers=self.headers)
-        print(r)
+        log(r)
         return r.json()
 
     def rk_report_error(self, im_id):
@@ -55,5 +56,5 @@ class RClient(object):
 if __name__ == '__main__':
     rc = RClient('931128603', '',)
     im = open('tkcode', 'rb').read()
-    print(rc.rk_create(im, 6113))
+    log(rc.rk_create(im, 6113))
 

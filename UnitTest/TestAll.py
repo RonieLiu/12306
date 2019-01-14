@@ -1,4 +1,5 @@
 # coding=utf-8
+from ronie.logger import log
 import unittest
 from collections import OrderedDict
 
@@ -31,7 +32,7 @@ class testAll(unittest.TestCase):
         proxie = _proxy.setProxy()
         url = "http://httpbin.org/ip"
         rsp = requests.get(url, proxies=proxie, timeout=5, headers=_set_header_default()).content
-        print(u"当前代理ip地址为: {}".format(rsp))
+        log(u"当前代理ip地址为: {}".format(rsp))
 
     def testEmail(self):
         """
@@ -39,7 +40,7 @@ class testAll(unittest.TestCase):
         :return:
         """
         sendEmail("订票小助手测试一下")
-  
+
     def testPushbear(self):
         """
         实测pushbear是否可用

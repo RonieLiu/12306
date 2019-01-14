@@ -130,4 +130,7 @@ open_time: '13:00:00'
 # 3、开启代理ip
 is_proxy: 0
 
+#同一票同时下单的次数
+totalThreadsNum: 3
+
 

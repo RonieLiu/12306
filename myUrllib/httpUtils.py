@@ -1,4 +1,5 @@
 # -*- coding: utf8 -*-
+from ronie.logger import log
 import json
 import socket
 from collections import OrderedDict
@@ -32,7 +33,7 @@ class HTTPClient(object):
         if is_proxy is 1:
             self.proxy = proxy()
             self._proxies = self.proxy.setProxy()
-            # print(u"设置当前代理ip为 {}, 请注意代理ip是否可用！！！！！请注意代理ip是否可用！！！！！请注意代理ip是否可用！！！！！".format(self._proxies))
+            # log(u"设置当前代理ip为 {}, 请注意代理ip是否可用！！！！！请注意代理ip是否可用！！！！！请注意代理ip是否可用！！！！！".format(self._proxies))
 
     def initS(self):
         self._s = requests.Session()
@@ -118,13 +119,13 @@ class HTTPClient(object):
         self.setHeadersReferer(urls["Referer"])
         if is_logger:
             logger.log(
-                u"url: {0}\n入参: {1}\n请求方式: {2}\n".format(req_url, data, method, ))
+                u"httpLog\turl: {0} 入参: {1} 请求方式: {2}".format(req_url, data, method, ))
         self.setHeadersHost(urls["Host"])
         if is_test_cdn:
             url_host = self._cdn
         elif is_cdn:
             if self._cdn:
-                # print(u"当前请求cdn为{}".format(self._cdn))
+                # log(u"当前请求cdn为{}".format(self._cdn))
                 url_host = self._cdn
             else:
                 url_host = urls["Host"]
@@ -151,8 +152,7 @@ class HTTPClient(object):
                         return response.content
                     if response.content:
                         if is_logger:
-                            logger.log(
-                                u"出参：{0}".format(response.content))
+                            logger.log(u"httpLog\t出参：{0}".format(response.content))
                         if urls["is_json"]:
                             return json.loads(response.content.decode() if isinstance(response.content, bytes) else response.content)
                         else:

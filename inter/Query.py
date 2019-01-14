@@ -1,4 +1,5 @@
 # coding=utf-8
+from ronie.logger import log
 import copy
 import threading
 import time
@@ -81,6 +82,7 @@ class query:
         查询
         :return:
         """
+        ronieOut = [];
         if self.session.is_cdn == 1:
             if self.session.cdn_list:
                 self.httpClint.cdn = self.session.cdn_list[random.randint(0, len(self.session.cdn_list) - 1)]
@@ -90,12 +92,12 @@ class query:
                                                                  self.session.queryUrl)
             station_ticket = self.httpClint.send(select_url)
             if station_ticket.get("c_url", ""):
-                print(u"设置当前查询url为: {}".format(station_ticket.get("c_url", "")))
+                log(u"设置当前查询url为: {}".format(station_ticket.get("c_url", "")))
                 self.session.queryUrl = station_ticket.get("c_url", "")  # 重设查询接口
                 continue
             value = station_ticket.get("data", "")
             if not value:
-                print(u'{0}-{1} 车次坐席查询为空,ip网络异常，查询url: https://kyfw.12306.cn{2}, 可以手动查询是否有票'.format(self.from_station_h,
+                log (u'{0}-{1} 车次坐席查询为空,ip网络异常，查询url: https://kyfw.12306.cn{2}, 可以手动查询是否有票'.format(self.from_station_h,
                                                                                                self.to_station_h,
                                                                                                select_url["req_url"]))
             else:
@@ -118,50 +120,60 @@ class query:
                                     start_time = ticket_info[8]
                                     arrival_time = ticket_info[9]
                                     distance_time = ticket_info[10]
-                                    print(start_time, arrival_time, distance_time)
+                                    log(u'start_time:{}, arrival_time:{}, distance_time:{}'.format(
+                                        start_time,
+                                        arrival_time,
+                                        distance_time
+                                    ))
                                     seat = j
                                     try:
                                         ticket_num = int(ticket_info[j])
                                     except ValueError:
                                         ticket_num = "有"
-                                    print (u'车次: {0} 始发车站: {1} 终点站: {2} {3}: {4}'.format(ticket_info[3],
+                                    log (u'车次: {0} 始发车站: {1} 终点站: {2} {3}: {4}'.format(ticket_info[3],
                                                                                          self.from_station_h,
                                                                                          self.to_station_h,
                                                                                          seat_conf_2[j],
                                                                                          ticket_num))
                                     if wrapcache.get(train_no):
-                                        print(ticket.QUERY_IN_BLACK_LIST.format(train_no))
+                                        log(ticket.QUERY_IN_BLACK_LIST.format(train_no))
                                         continue
                                     else:
                                         if ticket_num != "有" and self.ticke_peoples_num > ticket_num:
                                             if self.session.is_more_ticket:
-                                                print(
+                                                log(
                                                     u"余票数小于乘车人数，当前余票数: {}, 删减人车人数到: {}".format(ticket_num, ticket_num))
                                                 is_more_ticket_num = ticket_num
                                             else:
-                                                print(u"余票数小于乘车人数，当前设置不提交，放弃此次提交机会")
+                                                log(u"余票数小于乘车人数，当前设置不提交，放弃此次提交机会")
                                                 continue
                                         else:
-                                            print(u"设置乘车人数为: {}".format(self.ticke_peoples_num))
+                                            log(u"设置乘车人数为: {}".format(self.ticke_peoples_num))
                                             is_more_ticket_num = self.ticke_peoples_num
-                                        print (ticket.QUERY_C)
-                                        return {
-                                            "secretStr": secretStr,
-                                            "train_no": train_no,
-                                            "stationTrainCode": stationTrainCode,
-                                            "train_date": station_date,
-                                            "query_from_station_name": query_from_station_name,
-                                            "query_to_station_name": query_to_station_name,
-                                            "seat": seat,
-                                            "leftTicket": leftTicket,
-                                            "train_location": train_location,
-                                            "code": ticket.SUCCESS_CODE,
-                                            "is_more_ticket_num": is_more_ticket_num,
-                                            "cdn": self.httpClint.cdn,
-                                            "status": True,
-                                        }
+                                        log (ticket.QUERY_C)
+                                        ronieOut.append({
+                                                        "secretStr": secretStr,
+                                                        "train_no": train_no,
+                                                        "stationTrainCode": stationTrainCode,
+                                                        "train_date": station_date,
+                                                        "query_from_station_name": query_from_station_name,
+                                                        "query_to_station_name": query_to_station_name,
+                                                        "seat": seat,
+                                                        "leftTicket": leftTicket,
+                                                        "train_location": train_location,
+                                                        "code": ticket.SUCCESS_CODE,
+                                                        "is_more_ticket_num": is_more_ticket_num,
+                                                        "cdn": self.httpClint.cdn,
+                                                    })
+
                 else:
-                    print(u"车次配置信息有误，或者返回数据异常，请检查 {}".format(station_ticket))
+                    log(u"车次配置信息有误，或者返回数据异常，请检查 {}".format(station_ticket))
+
+        if len(ronieOut) > 0:
+            return {
+                "status": True,
+                "list": ronieOut
+            }
         return {"code": ticket.FAIL_CODE, "status": False, "cdn": self.httpClint.cdn,}
 
 

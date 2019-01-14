@@ -1,4 +1,5 @@
 # -*- coding=utf-8 -*-
+from ronie.logger import log
 
 import hashlib
 import json
@@ -110,14 +111,14 @@ class DamatuApi():
     def main(self):
         result = self.decode(287)
         img_code = result.replace('|', ',') if not isinstance(result, int) else ""
-        print("验证码识别坐标为{0}".format(img_code))
+        log("验证码识别坐标为{0}".format(img_code))
         return img_code
 
 # # 调用类型实例：
 # # 1.实例化类型 参数是打码兔用户账号和密码
 # dmt = DamatuApi("wenxianping", "wen1995")
 # # 2.调用方法：
-# print(dmt.getBalance())  # 查询余额
-# print(dmt.decode('tkcode', 287))  # 上传打码
-# # print(dmt.decodeUrl('https://kyfw.12306.cn/otn/passcodeNew/getPassCodeNew?module=login&rand=sjrand&0.7586344633015405', 310))  # 上传打码
-# # print(dmt.reportError('894657096')) # 上报错误
+# log(dmt.getBalance())  # 查询余额
+# log(dmt.decode('tkcode', 287))  # 上传打码
+# # log(dmt.decodeUrl('https://kyfw.12306.cn/otn/passcodeNew/getPassCodeNew?module=login&rand=sjrand&0.7586344633015405', 310))  # 上传打码
+# # log(dmt.reportError('894657096')) # 上报错误

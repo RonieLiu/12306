@@ -1,4 +1,5 @@
 # coding=utf-8
+from ronie.logger import log
 import json
 import urllib
 from collections import OrderedDict
@@ -69,4 +70,4 @@ class confirmSingleForQueueAsys:
                 qwt = queryOrderWaitTime(session=self.session)
                 qwt.sendQueryOrderWaitTime()
             else:
-                print(queueData.get("errMsg", ""))
+                log(queueData.get("errMsg", ""))

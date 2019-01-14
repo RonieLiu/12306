@@ -1,4 +1,5 @@
 # coding=utf-8
+from ronie.logger import log
 import datetime
 import urllib
 
@@ -65,6 +66,6 @@ class submitOrderRequest:
                                      self.train_date, self.ticke_peoples)
                 coi.sendCheckOrderInfo()
             else:
-                print (u'出票失败')
+                log (u'出票失败')
         elif 'messages' in submitResult and submitResult['messages']:
             raise ticketIsExitsException(submitResult['messages'][0])

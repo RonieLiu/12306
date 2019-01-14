@@ -1,4 +1,5 @@
 # coding=utf-8
+from ronie.logger import log
 import copy
 import time
 
@@ -26,7 +27,7 @@ class queryOrderWaitTime:
         while True:
             num += 1
             if num > ticket.OUT_NUM:
-                print(ticket.WAIT_OUT_NUM)
+                log(ticket.WAIT_OUT_NUM)
                 order_id = self.queryMyOrderNoComplete()  # 排队失败，自动取消排队订单
                 if order_id:
                     self.cancelNoCompleteMyOrder(order_id)
@@ -48,21 +49,21 @@ class queryOrderWaitTime:
                         raise ticketIsExitsException(ticket.WAIT_ORDER_SUCCESS.format(
                             data.get("orderId")))
                     elif data.get("msg", False):
-                        print(data.get("msg", ""))
+                        log(data.get("msg", ""))
                         break
                     elif data.get("waitTime", False):
-                        print(ticket.WAIT_ORDER_CONTINUE.format(0 - data.get("waitTime", False)))
+                        log(ticket.WAIT_ORDER_CONTINUE.format(0 - data.get("waitTime", False)))
                     else:
                         pass
                 elif queryOrderWaitTimeResult.get("messages", False):
-                    print(ticket.WAIT_ORDER_FAIL.format(queryOrderWaitTimeResult.get("messages", "")))
+                    log(ticket.WAIT_ORDER_FAIL.format(queryOrderWaitTimeResult.get("messages", "")))
                 else:
-                    print(ticket.WAIT_ORDER_NUM.format(num + 1))
+                    log(ticket.WAIT_ORDER_NUM.format(num + 1))
             else:
                 pass
             time.sleep(2)
         else:
-            print(ticketNumOutException(ticket.WAIT_ORDER_SUB_FAIL))
+            log(ticketNumOutException(ticket.WAIT_ORDER_SUB_FAIL))
 
     def queryMyOrderNoComplete(self):
         """
@@ -81,12 +82,12 @@ class queryOrderWaitTime:
                 return queryMyOrderNoCompleteResult["data"]
             elif queryMyOrderNoCompleteResult.get("data", False) and queryMyOrderNoCompleteResult["data"].get("orderCacheDTO", False):
                 if queryMyOrderNoCompleteResult["data"]["orderCacheDTO"].get("message", False):
-                    print(queryMyOrderNoCompleteResult["data"]["orderCacheDTO"]["message"]["message"])
+                    log(queryMyOrderNoCompleteResult["data"]["orderCacheDTO"]["message"]["message"])
                     raise ticketNumOutException(
                         queryMyOrderNoCompleteResult["data"]["orderCacheDTO"]["message"]["message"])
             else:
                 if queryMyOrderNoCompleteResult.get("message", False):
-                    print(queryMyOrderNoCompleteResult.get("message", False))
+                    log(queryMyOrderNoCompleteResult.get("message", False))
                     return False
                 else:
                     return False
@@ -117,9 +118,9 @@ class queryOrderWaitTime:
         cancelNoCompleteMyOrderResult = self.session.httpClint.send(cancelNoCompleteMyOrderUrl,
                                                                     cancelNoCompleteMyOrderData)
         if cancelNoCompleteMyOrderResult.get("data", False) and cancelNoCompleteMyOrderResult["data"].get("existError", "N"):
-            print(ticket.CANCEL_ORDER_SUCCESS.format(sequence_no))
+            log(ticket.CANCEL_ORDER_SUCCESS.format(sequence_no))
             time.sleep(2)
             return True
         else:
-            print(ticket.CANCEL_ORDER_FAIL.format(sequence_no))
+            log(ticket.CANCEL_ORDER_FAIL.format(sequence_no))
             return False

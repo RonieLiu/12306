@@ -1,4 +1,5 @@
 # coding=utf-8
+from ronie.logger import log
 import urllib
 from collections import OrderedDict
 
@@ -85,7 +86,7 @@ class autoSubmitOrderRequest:
                 result = requestResultData.get("result", "")
                 ifShowPassCode = requestResultData.get("ifShowPassCode", "N")
                 ifShowPassCodeTime = int(requestResultData.get("ifShowPassCodeTime", "1000")) / float(1000)
-                print(ticket.AUTO_SUBMIT_ORDER_REQUEST_C)
+                log(ticket.AUTO_SUBMIT_ORDER_REQUEST_C)
                 g = getQueueCountAsync(session=self.session,
                                        train_no=self.train_no,
                                        stationTrainCode=self.stationTrainCode,
@@ -101,24 +102,24 @@ class autoSubmitOrderRequest:
                                        ifShowPassCodeTime=ifShowPassCodeTime,
                                        )
                 if ifShowPassCode == "Y":  # 如果需要验证码
-                    print(u"需要验证码")
-                    print(u"正在使用自动识别验证码功能")
+                    log(u"需要验证码")
+                    log(u"正在使用自动识别验证码功能")
                     for i in range(3):
                         randCode = getRandCode(is_auto_code=True, auto_code_type=_get_yaml()["auto_code_type"])
                         checkcode = checkRandCodeAnsyn(self.session, randCode, "")
                         if checkcode == 'TRUE':
-                            print(u"验证码通过,正在提交订单")
+                            log(u"验证码通过,正在提交订单")
                             data['randCode'] = randCode
                             break
                         else:
-                            print (u"验证码有误, {0}次尝试重试".format(i + 1))
-                    print(u"验证码超过限定次数3次，放弃此次订票机会!")
+                            log (u"验证码有误, {0}次尝试重试".format(i + 1))
+                    log(u"验证码超过限定次数3次，放弃此次订票机会!")
                 g.sendGetQueueCountAsync()
         else:
-            print(ticket.AUTO_SUBMIT_ORDER_REQUEST_F)
+            log(ticket.AUTO_SUBMIT_ORDER_REQUEST_F)
             if autoSubmitOrderRequestResult.get("messages", ""):
-                print("".join(autoSubmitOrderRequestResult.get("messages", "")))
+                log("".join(autoSubmitOrderRequestResult.get("messages", "")))
             elif autoSubmitOrderRequestResult.get("validateMessages", ""):
-                print("".join(autoSubmitOrderRequestResult.get("validateMessages", "")))
+                log("".join(autoSubmitOrderRequestResult.get("validateMessages", "")))
 
 

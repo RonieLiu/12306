@@ -1,4 +1,5 @@
 # encoding=utf8
+from ronie.logger import log
 import os
 import random
 import socket
@@ -34,7 +35,7 @@ class proxy:
                 ip = ips[x]
                 tds = ip.findAll("td")
                 ip_temp = tds[1].contents[0] + ":" + tds[2].contents[0]
-                print(ip_temp)
+                log(ip_temp)
                 self.proxy_list.append(ip_temp)
 
     def filter_proxy(self):
@@ -54,14 +55,14 @@ class proxy:
             proxy_temp = {"https": "https://{}".format(proxy)}
             try:
                 req = requests.get(url, proxies=proxy_temp, timeout=2, headers=head).content
-                print(req)
+                log(req)
                 write_proxy = proxy + "\n"
                 f.write(write_proxy)
                 proxy_num += 1
             except Exception:
-                print ("代理链接超时，去除此IP：{0}".format(proxy))
+                log ("代理链接超时，去除此IP：{0}".format(proxy))
                 continue
-        print("总共可使用ip量为{}个".format(proxy_num))
+        log("总共可使用ip量为{}个".format(proxy_num))
 
     def get_filter_proxy(self):
         """
@@ -97,4 +98,4 @@ class proxy:
 
 if __name__ == "__main__":
     a = proxy()
-    print(a.get_filter_proxy())
+    log(a.get_filter_proxy())
